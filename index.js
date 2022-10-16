@@ -42,14 +42,30 @@ app.put("/edit", (req, res) => {
    const {email} = req.body
    const {senha} = req.body
    const {quant} = req.body
-   const {produtos} = req.body
 
    let mysql = "UPDATE doadores SET name = ?, email = ?, senha = ?, produtos = ?, quant = ? WHERE iddoadores = ? "
-   db.query(mysql, [id, name, email, senha, quant, produtos], (err, result) => {
-    if(err) console.log(err)
-    else res.send(result);
+   db.query(mysql, [id, name, email, senha, quant], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
   })
 })
+
+app.post("/search", (req, res) => {
+  const { name } = req.body;
+  const { email } = req.body;
+  const { senha} = req.body;
+  const { quant } = req.body;
+
+  let mysql =
+    "SELECT * from doadores WHERE name = ? AND email = ? AND senha = ? AND quant = ?";
+  db.query(mysql, [name, email, senha, quant], (err, result) => {
+    if (err) res.send(err);
+    res.send(result);
+  });
+});
 
 app.delete("/delete/:id", (req,res) => {
   const {iddoadores} = req.params;
