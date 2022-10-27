@@ -16,13 +16,14 @@ app.use(express.json());
 //Controle de solicitacoes
 
 app.post("/register", (req, res) => {
-  const {name} = req.body;
-  const {email} = req.body;
-  const {senha} = req.body;
+  const {produtos} = req.body;
+  const {doador} = req.body;
+  const {categoria} = req.body;
   const {quant} = req.body
+  const {data_} = req.body
 
-  let mysql = "INSERT INTO doadores (name, email, senha, quant) VALUES (?, ?, ?, ?)";
-  db.query(mysql, [name, email, senha, quant], (err, result) => {
+  let mysql = "INSERT INTO doadores (produtos, doador, categoria, quant, data_) VALUES (?, ?, ?, ?, ?)";
+  db.query(mysql, [produtos, doador, categoria, quant, data_], (err, result) => {
     if(err) console.log(err)
     else res.send(result);
   })
@@ -38,13 +39,14 @@ app.get("/pedido", (req, res) => {
 
 app.put("/edit", (req, res) => {
    const {id} = req.body
-   const {name} = req.body
-   const {email} = req.body
-   const {senha} = req.body
-   const {quant} = req.body
+   const {produtos} = req.body;
+  const {doador} = req.body;
+  const {categoria} = req.body;
+  const {quant} = req.body
+  const {data_} = req.body
 
-   let mysql = "UPDATE doadores SET name = ?, email = ?, senha = ?, produtos = ?, quant = ? WHERE iddoadores = ? "
-   db.query(mysql, [id, name, email, senha, quant], (err, result) => {
+   let mysql = "UPDATE doadores SET produtos = ? AND doador = ? AND categoria = ? AND quant = ? AND data_ = ? WHERE iddoadores = ? "
+   db.query(mysql, [id, produtos, doador, categoria, quant, data_], (err, result) => {
     if (err) {
       res.send(err);
     } else {
@@ -54,27 +56,31 @@ app.put("/edit", (req, res) => {
 })
 
 app.post("/search", (req, res) => {
-  const { name } = req.body;
-  const { email } = req.body;
-  const { senha} = req.body;
-  const { quant } = req.body;
+  const {produtos} = req.body;
+  const {doador} = req.body;
+  const {categoria} = req.body;
+  const {quant} = req.body
+  const {data_} = req.body
 
   let mysql =
-    "SELECT * from doadores WHERE name = ? AND email = ? AND senha = ? AND quant = ?";
-  db.query(mysql, [name, email, senha, quant], (err, result) => {
+    "SELECT * from doadores WHERE produtos = ? AND doador = ? AND categoria = ? AND quant = ? AND data_ = ?";
+  db.query(mysql, [produtos, doador, categoria, quant, data_], (err, result) => {
     if (err) res.send(err);
     res.send(result);
   });
 });
 
-app.delete("/delete/:id", (req,res) => {
-  const {iddoadores} = req.params;
-  let mysql = "DELETE FROM doadores WHERE iddoadores = ?";
-  db.query (mysql, [iddoadores], (err, result) => {
-    if(err) console.log(err)
-    else res.send(result);
-  })
-})
+app.delete("/delete/:id", (req, res) => {
+  const { id } = req.params;
+  let mysql = "DELETE FROM doadores WHERE id = ?";
+  db.query(mysql, id, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
 
 //Contribuintes
 
